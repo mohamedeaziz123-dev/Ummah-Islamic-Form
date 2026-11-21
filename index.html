@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ummah Islamic | تسجيل الطلاب</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#0c2f25; --green:#14684a; --green-soft:#e6f2ec; --gold:#c8a13a;
+    --bg:#eef3f1; --card:#fff; --text:#17261f; --muted:#62736b; --line:#d3dfd8;
+    --err:#b42318; --err-bg:#fdecea; --wa:#25d366; --radius:14px;
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{margin:0;background:var(--bg);color:var(--text);font-family:"Tajawal",Tahoma,Arial,sans-serif;line-height:1.7;font-size:16px}
+  .wrap{max-width:720px;margin:0 auto;padding:16px 16px 96px}
+
+  /* الترويسة */
+  .hero{
+    color:#fff;border-radius:var(--radius);padding:30px 22px;margin-bottom:16px;text-align:center;
+    background:
+      radial-gradient(circle at 12% 20%,rgba(200,161,58,.22) 0 2px,transparent 3px) 0 0/26px 26px,
+      linear-gradient(135deg,var(--ink),var(--green));
+    border-bottom:4px solid var(--gold);
+  }
+  .hero h1{margin:0;font-size:28px;font-weight:800;letter-spacing:.3px}
+  .hero p{margin:6px 0 0;opacity:.92;font-size:15px}
+
+  .card{background:var(--card);border-radius:var(--radius);padding:22px;border:1px solid var(--line)}
+  .field{margin-bottom:18px}
+  .lbl{display:block;font-weight:700;margin-bottom:6px}
+  .req{color:var(--err)}
+  .hint{font-size:13px;color:var(--muted);margin-top:4px}
+  input[type=text],input[type=tel],select{
+    width:100%;padding:12px 13px;border:1.5px solid var(--line);border-radius:10px;
+    font:inherit;background:#fff;color:var(--text)
+  }
+  input:focus,select:focus,button:focus-visible,a:focus-visible,.course:focus-within{
+    outline:3px solid rgba(20,104,74,.28);outline-offset:1px;border-color:var(--green)
+  }
+  input:disabled{background:#eef2ef}
+  .ltr{direction:ltr;text-align:right}
+  .inline{display:flex;align-items:center;gap:8px;margin-top:8px;font-size:14px;cursor:pointer}
+  .inline input{width:18px;height:18px;accent-color:var(--green)}
+
+  .section-title{font-weight:800;color:var(--ink);margin:26px 0 10px;padding-bottom:6px;border-bottom:2px solid var(--green-soft)}
+
+  /* بيانات الدفع */
+  .pay{background:var(--green-soft);border:1px solid #bfdccd;border-radius:12px;padding:14px 16px;margin-bottom:18px}
+  .pay strong{display:block;margin-bottom:4px}
+  .pay-row{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:6px 0;border-top:1px dashed #bfdccd}
+  .pay-row:first-of-type{border-top:0}
+  .pay-num{font-weight:800;direction:ltr;letter-spacing:.5px}
+  .copy{border:1px solid var(--green);background:#fff;color:var(--green);border-radius:8px;padding:4px 12px;font:inherit;font-size:13px;cursor:pointer}
+  .copy.done{background:var(--green);color:#fff}
+
+  /* الكورسات */
+  .course{display:flex;align-items:center;gap:12px;border:1.5px solid var(--line);border-radius:12px;padding:12px 14px;margin-bottom:8px;cursor:pointer;background:#fff}
+  .course:hover{border-color:var(--green)}
+  .course.checked{border-color:var(--green);background:var(--green-soft)}
+  .course.disabled{opacity:.55;cursor:not-allowed;background:#f3f4f3}
+  .course input{width:20px;height:20px;flex-shrink:0;accent-color:var(--green)}
+  .course .info{flex:1;font-size:15px}
+  .course .price{font-weight:800;color:var(--green);white-space:nowrap}
+  .course.disabled .price{color:#8a6d12}
+
+  .total{display:flex;justify-content:space-between;align-items:center;background:var(--ink);color:#fff;border-radius:12px;padding:14px 18px;margin:14px 0 20px;font-weight:700}
+  .total b{font-size:22px;color:#f3d77b}
+
+  .file-box{border:2px dashed #aac3b6;border-radius:12px;padding:16px;text-align:center;background:#fafcfb}
+  #preview{max-width:100%;max-height:220px;border-radius:10px;margin-top:10px;display:none}
+
+  .btn{width:100%;padding:14px;border:0;border-radius:12px;background:var(--green);color:#fff;font:inherit;font-size:18px;font-weight:800;cursor:pointer}
+  .btn:hover{background:#0f5a3f}
+  .btn:disabled{background:#8fb3a1;cursor:wait}
+
+  .error{display:none;background:var(--err-bg);color:var(--err);border:1px solid #f3c1bb;border-radius:10px;padding:10px 14px;margin-bottom:16px;font-size:15px}
+  .loading{text-align:center;padding:40px 10px;color:var(--muted)}
+
+  /* النجاح */
+  .success{display:none;text-align:center;padding:26px 6px}
+  .success .mark{width:64px;height:64px;margin:0 auto 10px;border-radius:50%;background:var(--green);color:#fff;font-size:34px;line-height:64px}
+  .success h2{margin:6px 0;color:var(--ink)}
+  .order{display:inline-block;background:var(--green-soft);border:1px dashed var(--green);border-radius:10px;padding:6px 18px;font-weight:800;font-size:20px;margin:6px 0}
+  .btn-wa{display:inline-flex;align-items:center;justify-content:center;gap:8px;margin-top:10px;padding:12px 22px;border-radius:12px;background:var(--wa);color:#073b1d;font-weight:800;text-decoration:none}
+
+  footer{text-align:center;color:var(--muted);font-size:13px;margin-top:16px}
+
+  /* زر واتساب الثابت */
+  .wa-float{
+    position:fixed;bottom:18px;left:18px;z-index:50;display:flex;align-items:center;gap:8px;
+    background:var(--wa);color:#073b1d;text-decoration:none;font-weight:800;
+    border-radius:999px;padding:12px 16px 12px 14px;box-shadow:0 6px 18px rgba(0,0,0,.25)
+  }
+  .wa-float svg{width:28px;height:28px;flex-shrink:0}
+  @media (max-width:480px){.wa-float span{display:none}.wa-float{padding:13px}}
+  @media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <header class="hero">
+    <h1 id="brandName"></h1>
+    <p id="brandSub"></p>
+  </header>
+
+  <main class="card">
+    <div id="loading" class="loading">جارٍ تحميل النموذج...</div>
+
+    <form id="f" novalidate style="display:none">
+      <div id="error" class="error" role="alert"></div>
+
+      <div class="field">
+        <label class="lbl" for="name">الاسم ثلاثي <span class="req">*</span></label>
+        <input type="text" id="name" autocomplete="name" placeholder="Ahmed Mohamed Ali">
+        <div class="hint">يفضل كتابته بالإنجليزية</div>
+      </div>
+
+      <div class="field">
+        <label class="lbl" for="phone">رقم الهاتف <span class="req">*</span></label>
+        <input type="tel" id="phone" class="ltr" inputmode="tel" autocomplete="tel" placeholder="01012345678">
+      </div>
+
+      <div class="field">
+        <label class="lbl" for="wa">رقم الواتساب <span class="req">*</span></label>
+        <input type="tel" id="wa" class="ltr" inputmode="tel" placeholder="01012345678">
+        <label class="inline"><input type="checkbox" id="sameWa"> نفس رقم الهاتف</label>
+      </div>
+
+      <div class="field">
+        <label class="lbl" for="gov">المحافظة <span class="req">*</span></label>
+        <select id="gov"><option value="">اختر المحافظة</option></select>
+        <input type="text" id="govOther" placeholder="اكتب المحافظة / الدولة" style="display:none;margin-top:8px">
+      </div>
+
+      <div class="section-title">الكورسات المتاحة (يمكنك اختيار أكثر من كورس) <span class="req">*</span></div>
+      <div id="courses"></div>
+      <div class="total"><span>الإجمالي المطلوب</span><b id="total"></b></div>
+
+      <div id="pay" class="pay"></div>
+
+      <div class="field">
+        <label class="lbl" for="transfer">رقم التحويل <span class="req">*</span></label>
+        <input type="text" id="transfer" class="ltr" autocomplete="off">
+      </div>
+
+      <div class="field">
+        <label class="lbl" for="file">صورة التحويل <span class="req">*</span></label>
+        <div class="file-box">
+          <input type="file" id="file" accept="image/jpeg,image/png,image/webp">
+          <div class="hint" id="fileHint"></div>
+          <img id="preview" alt="معاينة صورة التحويل">
+        </div>
+      </div>
+
+      <button type="submit" class="btn" id="btn"></button>
+    </form>
+
+    <div id="success" class="success">
+      <div class="mark">✓</div>
+      <h2 id="okTitle"></h2>
+      <div>رقم طلبك</div>
+      <div class="order" id="orderId"></div>
+      <p id="okTotal"></p>
+      <p id="okNote"></p>
+      <a id="okWa" class="btn-wa" target="_blank" rel="noopener"></a>
+    </div>
+  </main>
+
+  <footer id="footer"></footer>
+</div>
+
+<a id="waFloat" class="wa-float" target="_blank" rel="noopener">
+  <svg viewBox="0 0 32 32" aria-hidden="true"><path fill="#fff" d="M16 3C8.8 3 3 8.7 3 15.8c0 2.5.7 4.8 2 6.8L3 29l6.6-1.9c1.9 1 4 1.6 6.4 1.6 7.2 0 13-5.7 13-12.8S23.200 3 16 3zm0 23.300c-2.100 0-4.100-.6-5.800-1.700l-.4-.2-3.900 1.100 1.100-3.800-.3-.4a10.300 10.300 0 0 1-1.600-5.500C5.100 10.100 10 5.500 16 5.500s10.900 4.600 10.900 10.300S22 26.300 16 26.300zm6-7.700c-.3-.2-1.900-.9-2.200-1s-.5-.2-.7.200-.8 1-1 1.200-.4.200-.7.100a8.600 8.600 0 0 1-4.300-3.700c-.3-.6.300-.6.900-1.700.1-.2 0-.4 0-.5l-1-2.300c-.3-.6-.5-.5-.7-.5h-.6c-.2 0-.5.100-.8.400s-1 1-1 2.400 1 2.800 1.200 3c.1.200 2.100 3.200 5.100 4.500 1.900.8 2.600.9 3.600.7.600-.1 1.900-.8 2.200-1.500s.3-1.400.2-1.500-.3-.2-.6-.4z"/></svg>
+  <span id="waFloatText"></span>
+</a>
+
+<script>
+/* ============================================================
+   إعدادات الصفحة: عدّل القيم هنا فقط
+   (الكورسات وأسعارها والمحافظات موجودة في Code.gs وبتتحمّل تلقائيًا)
+   ============================================================ */
+const CONFIG = {
+  // رابط الـ Web App (بينتهي بـ /exec)
+  apiUrl: 'https://script.google.com/macros/s/AKfycbzREMA2GDA2Dmr_gay9BhIsbpGVyh8vXzTkwO_D80tutohiqnxBIHB4YX0u0I_t70QM/exec',
+
+  brand: {
+    name: 'Ummah Islamic',
+    subtitle: 'نموذج تسجيل الطلاب',
+    footer: '© Ummah Islamic'
+  },
+
+  // بيانات التواصل مع الدعم (الرقم بالصيغة الدولية بدون + أو 00)
+  support: {
+    whatsapp: '01065667219',
+    floatText: 'تواصل مع الدعم',
+    defaultMessage: 'السلام عليكم، عندي استفسار بخصوص التسجيل في Ummah Islamic.',
+    afterOrderText: 'تواصل معنا على واتساب'
+  },
+
+  // بيانات التحويل اللي هتظهر للطالب (احذف العناصر أو اجعل methods = [] لإخفاء القسم)
+  payment: {
+    title: 'حوّل المبلغ على أحد الأرقام التالية ثم ارفق صورة التحويل:',
+    methods: [
+      { label: 'اتصالات كاش', number: '01146473847' },
+      { label: 'انستا باي', number: '01065667219' }
+    ]
+  },
+
+  currency: 'جنيه',
+  limits: { maxFileMB: 8, imageMaxSide: 1600, imageQuality: 0.85 },
+  allowedTypes: ['image/jpeg', 'image/png', 'image/webp']
+};
+
+/* كل النصوص في مكان واحد */
+const TEXT = {
+  loadFail: 'تعذر تحميل النموذج. أعد تحديث الصفحة.',
+  sending: 'جارٍ الإرسال... برجاء الانتظار',
+  submit: 'إرسال التسجيل',
+  connectFail: 'تعذر الاتصال بالسيرفر، حاول مرة أخرى.',
+  readFail: 'تعذر قراءة الصورة، جرّب صورة أخرى.',
+  unknown: 'حدث خطأ، حاول مرة أخرى.',
+  copy: 'نسخ',
+  copied: 'تم النسخ',
+  okTitle: 'تم استلام طلبك بنجاح',
+  okNote: 'سنراجع التحويل ونتواصل معك عبر واتساب قريبًا. جزاكم الله خيرًا.',
+  soon: 'قريباً',
+  chooseGov: 'اختر المحافظة',
+  errors: {
+    name: 'من فضلك اكتب الاسم ثلاثي',
+    phone: 'رقم الهاتف غير صحيح',
+    wa: 'رقم الواتساب غير صحيح',
+    transfer: 'من فضلك اكتب رقم التحويل',
+    gov: 'من فضلك اختر المحافظة',
+    govOther: 'من فضلك اكتب المحافظة / الدولة',
+    courses: 'من فضلك اختر كورس واحد على الأقل',
+    file: 'من فضلك ارفق صورة التحويل',
+    fileType: 'الصورة لازم تكون JPG أو PNG أو WEBP',
+    fileSize: 'حجم الصورة كبير (الحد الأقصى ' + CONFIG.limits.maxFileMB + 'MB)'
+  }
+};
+
+/* ============================ المنطق ============================ */
+const $ = (id) => document.getElementById(id);
+const state = { cfg: null, selected: new Set() };
+const PHONE_RE = /^\+?\d{8,15}$/;
+
+const toEn = (s) => String(s || '')
+  .replace(/[\u0660-\u0669]/g, (d) => d.charCodeAt(0) - 0x0660)
+  .replace(/[\u06F0-\u06F9]/g, (d) => d.charCodeAt(0) - 0x06F0)
+  .trim();
+const cleanPhone = (s) => toEn(s).replace(/[\s\-]/g, '');
+const waLink = (msg) => 'https://wa.me/' + CONFIG.support.whatsapp + '?text=' + encodeURIComponent(msg);
+const money = (n) => n + ' ' + CONFIG.currency;
+
+function applyStaticTexts() {
+  $('brandName').textContent = CONFIG.brand.name;
+  $('brandSub').textContent = CONFIG.brand.subtitle;
+  $('footer').textContent = CONFIG.brand.footer;
+  $('btn').textContent = TEXT.submit;
+  $('fileHint').textContent = 'JPG / PNG / WEBP - الحد الأقصى ' + CONFIG.limits.maxFileMB + 'MB';
+  $('total').textContent = money(0);
+  $('waFloatText').textContent = CONFIG.support.floatText;
+  $('waFloat').href = waLink(CONFIG.support.defaultMessage);
+  $('waFloat').setAttribute('aria-label', CONFIG.support.floatText);
+}
+
+function renderPayment() {
+  const box = $('pay');
+  const methods = CONFIG.payment.methods || [];
+  if (!methods.length) { box.style.display = 'none'; return; }
+  const title = document.createElement('strong');
+  title.textContent = CONFIG.payment.title;
+  box.appendChild(title);
+  methods.forEach((m) => {
+    const row = document.createElement('div');
+    row.className = 'pay-row';
+    const label = document.createElement('span');
+    label.textContent = m.label;
+    const num = document.createElement('span');
+    num.className = 'pay-num';
+    num.textContent = m.number;
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'copy';
+    btn.textContent = TEXT.copy;
+    btn.addEventListener('click', () => {
+      const done = () => {
+        btn.textContent = TEXT.copied; btn.classList.add('done');
+        setTimeout(() => { btn.textContent = TEXT.copy; btn.classList.remove('done'); }, 1500);
+      };
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(m.number).then(done).catch(() => {});
+      }
+    });
+    row.append(label, num, btn);
+    box.appendChild(row);
+  });
+}
+
+function init(cfg) {
+  state.cfg = cfg;
+  const gov = $('gov');
+  cfg.governorates.concat([cfg.other]).forEach((g) => {
+    const o = document.createElement('option');
+    o.value = g; o.textContent = g;
+    gov.appendChild(o);
+  });
+  renderCourses();
+  renderPayment();
+  $('loading').style.display = 'none';
+  $('f').style.display = 'block';
+}
+
+function renderCourses() {
+  const box = $('courses');
+  state.cfg.courses.forEach((c) => {
+    const label = document.createElement('label');
+    label.className = 'course' + (c.soon ? ' disabled' : '');
+    const cb = document.createElement('input');
+    cb.type = 'checkbox'; cb.value = c.id; cb.disabled = !!c.soon;
+    cb.addEventListener('change', () => {
+      cb.checked ? state.selected.add(c.id) : state.selected.delete(c.id);
+      label.classList.toggle('checked', cb.checked);
+      $('total').textContent = money(calcTotal());
+    });
+    const info = document.createElement('span');
+    info.className = 'info'; info.textContent = c.name;
+    const price = document.createElement('span');
+    price.className = 'price';
+    price.textContent = c.soon ? TEXT.soon : money(c.price);
+    label.append(cb, info, price);
+    box.appendChild(label);
+  });
+}
+
+function calcTotal() {
+  return state.cfg.courses.reduce((t, c) => t + (state.selected.has(c.id) && c.price ? c.price : 0), 0);
+}
+
+/* نفس رقم الهاتف */
+function syncWa() { if ($('sameWa').checked) $('wa').value = $('phone').value; }
+$('sameWa').addEventListener('change', function () { $('wa').disabled = this.checked; syncWa(); });
+$('phone').addEventListener('input', syncWa);
+
+/* المحافظة - أخرى */
+$('gov').addEventListener('change', function () {
+  $('govOther').style.display = this.value === state.cfg.other ? 'block' : 'none';
+});
+
+/* معاينة الصورة */
+$('file').addEventListener('change', function () {
+  const f = this.files[0], p = $('preview');
+  if (f && CONFIG.allowedTypes.includes(f.type)) {
+    p.src = URL.createObjectURL(f); p.style.display = 'block';
+  } else { p.style.display = 'none'; }
+});
+
+function showError(msg) {
+  const e = $('error');
+  e.textContent = msg; e.style.display = 'block';
+  e.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  return false;
+}
+
+/* تصغير الصورة قبل الرفع (أسرع وأقل أخطاء) */
+function compressImage(file) {
+  return new Promise((resolve) => {
+    const img = new Image();
+    const url = URL.createObjectURL(file);
+    img.onload = () => {
+      try {
+        const max = CONFIG.limits.imageMaxSide;
+        const scale = Math.min(1, max / Math.max(img.width, img.height));
+        const c = document.createElement('canvas');
+        c.width = Math.round(img.width * scale);
+        c.height = Math.round(img.height * scale);
+        const ctx = c.getContext('2d');
+        ctx.fillStyle = '#fff'; ctx.fillRect(0, 0, c.width, c.height);
+        ctx.drawImage(img, 0, 0, c.width, c.height);
+        c.toBlob((b) => resolve(b || file), 'image/jpeg', CONFIG.limits.imageQuality);
+      } catch (e) { resolve(file); }
+      URL.revokeObjectURL(url);
+    };
+    img.onerror = () => { URL.revokeObjectURL(url); resolve(file); };
+    img.src = url;
+  });
+}
+
+function toBase64(blob) {
+  return new Promise((resolve, reject) => {
+    const r = new FileReader();
+    r.onload = () => resolve(String(r.result).split(',')[1]);
+    r.onerror = () => reject(new Error('read'));
+    r.readAsDataURL(blob);
+  });
+}
+
+function validate() {
+  const E = TEXT.errors;
+  const d = {
+    name: $('name').value.replace(/\s+/g, ' ').trim(),
+    phone: cleanPhone($('phone').value),
+    wa: cleanPhone($('sameWa').checked ? $('phone').value : $('wa').value),
+    transfer: toEn($('transfer').value),
+    gov: $('gov').value,
+    govOther: $('govOther').value.trim(),
+    courses: Array.from(state.selected),
+    file: $('file').files[0]
+  };
+  if (d.name.split(' ').length < 3) return showError(E.name);
+  if (!PHONE_RE.test(d.phone)) return showError(E.phone);
+  if (!PHONE_RE.test(d.wa)) return showError(E.wa);
+  if (!d.gov) return showError(E.gov);
+  if (d.gov === state.cfg.other && !d.govOther) return showError(E.govOther);
+  if (!d.courses.length) return showError(E.courses);
+  if (!d.transfer) return showError(E.transfer);
+  if (!d.file) return showError(E.file);
+  if (!CONFIG.allowedTypes.includes(d.file.type)) return showError(E.fileType);
+  if (d.file.size > CONFIG.limits.maxFileMB * 1024 * 1024) return showError(E.fileSize);
+  return d;
+}
+
+function setBusy(busy) {
+  $('btn').disabled = busy;
+  $('btn').textContent = busy ? TEXT.sending : TEXT.submit;
+}
+
+$('f').addEventListener('submit', async (ev) => {
+  ev.preventDefault();
+  $('error').style.display = 'none';
+  const d = validate();
+  if (!d) return;
+  setBusy(true);
+
+  let blob, b64;
+  try {
+    blob = await compressImage(d.file);
+    b64 = await toBase64(blob);
+  } catch (e) {
+    setBusy(false);
+    return showError(TEXT.readFail);
+  }
+
+  const payload = {
+    name: d.name, phone: d.phone, whatsapp: d.wa, transferNumber: d.transfer,
+    governorate: d.gov, governorateOther: d.govOther, courses: d.courses,
+    file: { name: d.file.name, type: blob.type || d.file.type, data: b64 }
+  };
+
+  try {
+    // بدون Content-Type عمدًا (لتجنب مشكلة CORS مع Apps Script)
+    const res = await fetch(CONFIG.apiUrl, { method: 'POST', body: JSON.stringify(payload) });
+    const out = await res.json();
+    if (!out || !out.ok) throw new Error((out && out.message) || TEXT.unknown);
+    showSuccess(out);
+  } catch (e) {
+    setBusy(false);
+    showError(e && e.message && e.message !== 'Failed to fetch' ? e.message : TEXT.connectFail);
+  }
+});
+
+function showSuccess(out) {
+  $('f').style.display = 'none';
+  $('okTitle').textContent = TEXT.okTitle;
+  $('orderId').textContent = out.orderId;
+  $('okTotal').textContent = 'الإجمالي: ' + money(out.total);
+  $('okNote').textContent = TEXT.okNote;
+  const a = $('okWa');
+  a.textContent = CONFIG.support.afterOrderText;
+  a.href = waLink('السلام عليكم، قمت بالتسجيل برقم الطلب ' + out.orderId + ' وأريد المتابعة.');
+  $('success').style.display = 'block';
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+/* تشغيل */
+applyStaticTexts();
+fetch(CONFIG.apiUrl + '?action=config')
+  .then((r) => r.json())
+  .then(init)
+  .catch(() => { $('loading').textContent = TEXT.loadFail; });
+</script>
+</body>
+</html>
